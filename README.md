@@ -16,13 +16,11 @@
 ![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/961f60b9-00d7-4588-8286-f5769c6e8c71)
 
 
-
-
-
-
 ## API APP
 
 ### INSTALL API APP
 ![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/e8a2a951-f6a4-43b1-8397-6019cc9af8d3)
+
+### RUN API APP
 
 
