@@ -17,13 +17,17 @@ import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { ListComponent } from './list/list.component';
 import { AddComponent } from './add/add.component';
+import { CalendarComponent } from './calendar/calendar.component';
+import { BookingsComponent } from './bookings/bookings.component';
 
 
 @NgModule({
   declarations: [
     HomeComponent,
     ListComponent,
-    AddComponent
+    AddComponent,
+    CalendarComponent,
+    BookingsComponent
   ],
   imports: [
     CommonModule,
