@@ -1,1 +1,37 @@
-<p>auth works!</p>
+<div class="center-div">
+    <div class="login-image">
+        <img src="../../assets/images/goodxlogo.png" alt="">
+    </div>
+    
+    <form *ngIf="loginForm" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+        <div class="login-card-header-font">
+            <p class="login-card-header-font-dash">goodX Assessment</p>
+        </div>
+        <mat-card class="login-card">
+            <mat-spinner class="login-spinner" *ngIf="load"></mat-spinner>
+            <div *ngIf="!load">
+                <mat-card-content>
+                    <p>
+                        <mat-form-field appearance="fill" class="login-card-content-field">
+                            <mat-label>Username</mat-label>
+                            <input matInput placeholder="Username" formControlName="username">
+                        </mat-form-field>
+                    </p>
+                    <p>
+                        <mat-form-field appearance="fill" class="login-card-content-field">
+                            <mat-label>Password</mat-label>
+                            <input matInput placeholder="Password" formControlName="password"
+                                [type]="show ? 'text' : 'password'">
+                            <mat-icon matSuffix (click)="show = !show">{{ show ? 'visibility_off' : 'visibility'
+                                }}</mat-icon>
+                        </mat-form-field>
+                    </p>
+                </mat-card-content>
+                <div class="login-submit">
+                    <button type="submit" mat-raised-button id="login-button">Log in</button>
+                </div>
+            </div>
+        </mat-card>
+    </form>
+</div>
+

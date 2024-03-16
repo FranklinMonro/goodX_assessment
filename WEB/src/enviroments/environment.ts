@@ -1,14 +1,6 @@
-const environmentGX = {
-    production: false,
-    urlBase: 'https://dev_interview.qagoodx.co.za/api/',
-};
-
-const environmentAPI = {
+const environment = {
     production: false,
     urlBase: 'http://localhost:3000/goodxapi/',
 };
 
-export {
-    environmentGX,
-    environmentAPI,
-}
+export default environment;
