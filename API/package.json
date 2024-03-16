@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*.ts'",
+    "tsc": "tsc",
+    "build": "tsc -p .",
+    "dev": "nodemon -L --exec ts-node server/server.ts",
+    "lint": "eslint \"./**/*.js\" --quiet"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +19,8 @@
     "debug": "^4.3.4",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
+    "jsonwebtoken": "^9.0.2",
+    "luxon": "^3.4.4",
     "pg": "^8.11.3",
     "sequelize": "^6.37.1",
     "winston": "^3.12.0"
