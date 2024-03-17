@@ -15,18 +15,18 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler) {
-    // return this.authService.user.pipe(
-    //   take(1),
-    //   exhaustMap((user) => {
-    //     if (!user) {
-    //       return next.handle(request);
-    //     }
-    //     const modifiedRequest = request.clone({
-    //       headers: new HttpHeaders().set('X-Authorization', user?.token!),
-    //     });
-    //     return next.handle(modifiedRequest);
-    //   }),
-    // );
+    return this.authService.user$.pipe(
+      take(1),
+      exhaustMap((user) => {
+        if (!user) {
+          return next.handle(request);
+        }
+        const modifiedRequest = request.clone({
+          headers: new HttpHeaders().set('X-Authorization', user?.token!),
+        });
+        return next.handle(modifiedRequest);
+      }),
+    );
     return next.handle(request);
   }
 }

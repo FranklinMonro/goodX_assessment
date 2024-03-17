@@ -1,24 +1,29 @@
+import { DateTime } from 'luxon'; 
 
 interface LogInAuthUser {
     username: string;
     password: string;
+    jwtToken: string;
+    expiresIn: number;
 }
 
-class Auth {
+class User {
     constructor(
-        private _bearerToken: string,
+        public userName: string, 
+        private _token: string,
+        private _tokenExpirationDate: DateTime,
     ){}
 
-    get bearerToken(): string | null {
-        if (!this._bearerToken) {
+    get token(): string | null {
+        if (!this._tokenExpirationDate || DateTime.now() > this._tokenExpirationDate) {
             return null;
         }
 
-        return this.bearerToken;
+        return this._token;
     }
 }
 
 export {
     LogInAuthUser,
-    Auth,
+    User,
 };

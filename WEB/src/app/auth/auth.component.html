@@ -2,8 +2,7 @@
     <div class="login-image">
         <img src="../../assets/images/goodxlogo.png" alt="">
     </div>
-    
-    <form *ngIf="loginForm" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+    <form *ngIf="loginForm" [formGroup]="loginForm">
         <div class="login-card-header-font">
             <p class="login-card-header-font-dash">goodX Assessment</p>
         </div>
@@ -28,7 +27,9 @@
                     </p>
                 </mat-card-content>
                 <div class="login-submit">
-                    <button type="submit" mat-raised-button id="login-button">Log in</button>
+                    <button type="button" mat-raised-button id="login-button" (click)="onLogin()">Log in</button>
+                    &nbsp;
+                    <button type="button" mat-raised-button color="accent" (click)="onRegister()">Register</button>
                 </div>
             </div>
         </mat-card>
