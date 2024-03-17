@@ -36,6 +36,7 @@ export class AuthComponent {
 
   public onLogin = (): void => {
     if (this.loginForm?.invalid) {
+      this.toastrService.warning('Check that all required fields are filled in', 'WARNING');
       return;
     }
     this.load = true;
@@ -65,13 +66,14 @@ export class AuthComponent {
 
   public onRegister = (): void => {
     if (this.loginForm?.invalid) {
+      this.toastrService.warning('Check that all required fields are filled in', 'WARNING');
       return;
     }
     this.load = true;
     this.authService.postRegister(this.loginForm?.value).subscribe({
-      next: (status: number) => {
+      next: (response: HttpResponse<LogInAuthUser>) => {
         this.load = false;
-        if (status === 201) {
+        if (response.status === 201) {
           this.toastrService.success('User has been register', 'SUCCESS');
           return;
         }

@@ -20,16 +20,6 @@ export class AuthService {
     return this.httpClient.post<LogInAuthUser>(`${environment.urlBase}auth/login`, loginForm, 
     { observe: 'response' }).pipe(
       tap((response: HttpResponse<LogInAuthUser>) => {
-        return response.status;
-      }),
-      catchError((error: HttpErrorResponse) =>  { throw new Error(error.message); }),
-    );
-  };
-
-  public postRegister = (loginForm: LogInAuthUser): Observable<any> => {
-    return this.httpClient.post<LogInAuthUser>(`${environment.urlBase}auth/register`, loginForm, 
-    { observe: 'response' }).pipe(
-      map((response: HttpResponse<LogInAuthUser>) => {
         const {
           username,
           jwtToken,
@@ -42,13 +32,23 @@ export class AuthService {
     );
   };
 
+  public postRegister = (loginForm: LogInAuthUser): Observable<any> => {
+    return this.httpClient.post<LogInAuthUser>(`${environment.urlBase}auth/register`, loginForm, 
+    { observe: 'response' }).pipe(
+      map((response: HttpResponse<LogInAuthUser>) => {
+        return response.status;
+      }),
+      catchError((error: HttpErrorResponse) =>  { throw new Error(error.message); }),
+    );
+  };
+
   public handleAuthentication = (
-    userName: string, 
+    username: string, 
     jwtToken: string,
     expiresIn: number,
   ) => {
     const expirationDate = DateTime.fromMillis(expiresIn);
-    const user = new User(userName, jwtToken, expirationDate);
+    const user = new User(username, jwtToken, expirationDate);
     this.user$.next(user);
     this.autoLogOut(expiresIn);
     localStorage.setItem('authData', JSON.stringify(user));
