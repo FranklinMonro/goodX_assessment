@@ -118,7 +118,34 @@ export class AddComponent implements OnInit, OnDestroy {
   public removePatient = (patientIndex: number): void => {
     this.patientsControl.removeAt(patientIndex);
     this.dataSource = new MatTableDataSource(this.patientsControl.value);
-  }
+
+    const patientID = this.patientsControl.at(patientIndex).get('id')?.value;
+    if (patientID !== '' || patientID !== null) {
+      this.loadSpinner = true;
+      this.subscription = this.homeService.deleteClient(patientID).subscribe({
+        next: (response: any) => {
+          this.loadSpinner = false;
+          if (response.status === 202) {
+            this.toastrService.success('Client has been deleted', 'SUCCESS');
+            this.dataSource = new MatTableDataSource(response.body);
+            return;
+          }
+          this.toastrService.warning('Client has not been deleted', 'WARNING');
+        },
+        error: (error: ErrorEvent) => {
+          this.loadSpinner = false;
+          if (error.message.includes('404')) {
+            this.toastrService.warning('Client has not been deleted', 'WARNING');
+            return;
+          }
+          this.toastrService.error(`Error deleting client, error: ${error.message}`, 'ERROR')
+        },
+        complete: () => {
+          this.loadSpinner = false;
+        }
+      });
+    };
+  };
 
   public addClient = (): void => {
     if (this.debtorForm?.invalid) {
@@ -138,10 +165,10 @@ export class AddComponent implements OnInit, OnDestroy {
       error: (error: ErrorEvent) => {
         this.loadSpinner = false;
         if (error.message.includes('404')) {
-          this.toastrService.warning('Log in details is incorrect', 'WARNING');
+          this.toastrService.warning('Client has not been added', 'WARNING');
           return;
         }
-        this.toastrService.error(`Error in login, error: ${error.message}`, 'ERROR')
+        this.toastrService.error(`Error in adding client, error: ${error.message}`, 'ERROR')
       },
       complete: () => {
         this.loadSpinner = false;
