@@ -4,6 +4,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import { appLogger as log, errorHandlerLogger as errorLog } from './winston';
 
 import AuthenticateRouter from '../routes/auth/auth.routes';
+import ClientsRouter from '../routes/clients/clients.routes';
 
 class App {
     public httpServer = express();
@@ -31,6 +32,8 @@ class App {
         });
 
         this.httpServer.use('/goodxapi/auth', AuthenticateRouter);
+
+        this.httpServer.use('/goodxapi/clients', ClientsRouter);
 
         this.httpServer.use((err: Error, req: Request, res: Response, next: NextFunction) => {
             console.log(`error in url ${req.originalUrl} - error: ${err}`);

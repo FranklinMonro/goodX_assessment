@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import * as Sequelize from 'sequelize';
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes, Model, Optional } from 'sequelize';
 
 export interface usersAttributes {
   id: string;
@@ -14,9 +13,7 @@ export type usersCreationAttributes = usersAttributes;
 
 export class users extends Model<usersAttributes, usersCreationAttributes> implements usersAttributes {
   id!: string;
-
   username!: string;
-
   password!: string;
 
 

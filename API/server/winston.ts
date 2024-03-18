@@ -54,11 +54,11 @@ const configLogger = createLogger({
     },
 });
 
-const dataTypeOptionsLogger = createLogger({
+const clientsLogger = createLogger({
     transports: [
         new transports.File({
             dirname: 'logs',
-            filename: 'dataTypeOptionsLogger.log',
+            filename: 'clientsLogger.log',
         }),
     ],
     format: format.combine(
@@ -108,24 +108,6 @@ const jwtTokenLogger = createLogger({
     },
 });
 
-const usersLogger = createLogger({
-    transports: [
-        new transports.File({
-            dirname: 'logs',
-            filename: 'usersLogger.log',
-        }),
-    ],
-    format: format.combine(
-        format.timestamp(),
-        format.printf(({
-            timestamp, level, message, service,
-        }) => `[${timestamp}] ${service} ${level}: ${message}`),
-    ),
-    defaultMeta: {
-        service: 'WinstonExample',
-    },
-});
-
 const serverLogger = createLogger({
     transports: [
         new transports.File({
@@ -148,9 +130,8 @@ export {
     authenticateLogger,
     appLogger,
     configLogger,
-    dataTypeOptionsLogger,
+    clientsLogger,
     errorHandlerLogger,
     jwtTokenLogger,
-    usersLogger,
     serverLogger,
 };
