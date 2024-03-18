@@ -4,8 +4,10 @@ import { bookingLogger as log } from '../../server/winston';
 import { SEQUILIZE_NEW } from '../../server/config';
 import { initModels } from '../../models-auto/init-models';
 import { BookingClient, BookingClientAttribute } from './bookings.interfaces';
+import { randomUUID } from 'crypto';
+import { DateTime } from 'luxon';
 
-const { clients } = initModels(SEQUILIZE_NEW);
+const { clients, calendar } = initModels(SEQUILIZE_NEW);
 
 const getBookingClientsAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -62,17 +64,16 @@ const getBookingClientsAll = async (req: Request, res: Response, next: NextFunct
 
 const getBookingsAll = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const allDebtors = await clients.findAll({
-            where: {
-                active: true,
-                main: true,
-            },
-        }).catch((err: ErrorEvent) => {
+        const allDebtors = await calendar.findAll().catch((err: ErrorEvent) => {
             log.error(`Error in clients getDebtorsAll allDebtors, error: ${err.message}`);
             throw new Error(`Error in clients getDebtorsAll allDebtors, error: ${err}`)
         });;
-
-        res.status(200).send(allDebtors);
+        const bookings = allDebtors.map((appi) => {
+            appi.endDate = new Date(appi.endDate!);
+            appi.startDate = new Date(appi.startDate!);
+            return appi;
+        });
+        res.status(200).send(bookings);
     } catch (error) {
         log.log('error', `URL ${req.baseUrl}, error: ${error}`);
         next(error);
@@ -81,20 +82,32 @@ const getBookingsAll = async (req: Request, res: Response, next: NextFunction): 
 
 const postBooking = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        console.log(req.body);
-        // const data: 
-        // const allDebtors = await clients.findAll({
-        //     where: {
-        //         active: true,
-        //         main: true,
-        //     },
-        // }).catch((err: ErrorEvent) => {
-        //     log.error(`Error in clients getDebtorsAll allDebtors, error: ${err.message}`);
-        //     throw new Error(`Error in clients getDebtorsAll allDebtors, error: ${err}`)
-        // });;
+        const {
+            allDay = false,
+            startDate,
+            endDate,
+            title = '',
+            description = '',
+            doctorName = 1,
+            debtorID = '',
+            patientID = '',
+        } = req.body;
 
-        // res.status(200).send(allDebtors);
-        res.status(201);
+        const create = await calendar.create({
+            id: randomUUID(),
+            allDay,
+            startDate: DateTime.fromISO(startDate!).toBSON(),
+            endDate: DateTime.fromISO(endDate!).toBSON(),
+            title,
+            description,
+            doctorName,
+            debtorID,
+            patientID,
+        }).catch((err: ErrorEvent) => {
+            log.error(`Error in bookings postBooking , error: ${err.message}`);
+            throw new Error(`Error in clients postBooking, error: ${err}`)
+        });
+        res.status(201).send(create.toJSON());
     } catch (error) {
         log.log('error', `URL ${req.baseUrl}, error: ${error}`);
         next(error);
@@ -110,9 +123,9 @@ const getBooking = async (req: Request, res: Response, next: NextFunction): Prom
                 main: true,
             },
         }).catch((err: ErrorEvent) => {
-            log.error(`Error in clients getDebtorsAll allDebtors, error: ${err.message}`);
-            throw new Error(`Error in clients getDebtorsAll allDebtors, error: ${err}`)
-        });;
+            log.error(`Error in bookings getBooking , error: ${err.message}`);
+            throw new Error(`Error in clients getBooking, error: ${err}`)
+        });
 
         res.status(200).send(allDebtors);
     } catch (error) {
@@ -124,17 +137,35 @@ const getBooking = async (req: Request, res: Response, next: NextFunction): Prom
 
 const putBooking = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const allDebtors = await clients.findAll({
+        const {
+            id = '',
+            allDay = false,
+            startDate,
+            endDate,
+            title = '',
+            description = '',
+            doctorName = 1,
+            debtorID = '',
+            patientID = '',
+        } = req.body;
+        await calendar.update({
+            allDay,
+            startDate: DateTime.fromISO(startDate!).toBSON(),
+            endDate: DateTime.fromISO(endDate!).toBSON(),
+            title,
+            description,
+            doctorName,
+            debtorID,
+            patientID,
+        }, {
             where: {
-                active: true,
-                main: true,
+                id,
             },
         }).catch((err: ErrorEvent) => {
-            log.error(`Error in clients getDebtorsAll allDebtors, error: ${err.message}`);
-            throw new Error(`Error in clients getDebtorsAll allDebtors, error: ${err}`)
-        });;
-
-        res.status(200).send(allDebtors);
+            log.error(`Error in bookings putBooking , error: ${err.message}`);
+            throw new Error(`Error in clients putBooking, error: ${err}`)
+        });
+        res.status(200);
     } catch (error) {
         log.log('error', `URL ${req.baseUrl}, error: ${error}`);
         next(error);
@@ -143,14 +174,14 @@ const putBooking = async (req: Request, res: Response, next: NextFunction): Prom
 
 const deleteBooking = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const allDebtors = await clients.findAll({
+        const { bookingID } = req.params
+        const allDebtors = await calendar.destroy({
             where: {
-                active: true,
-                main: true,
+                id: bookingID as string,
             },
         }).catch((err: ErrorEvent) => {
-            log.error(`Error in clients getDebtorsAll allDebtors, error: ${err.message}`);
-            throw new Error(`Error in clients getDebtorsAll allDebtors, error: ${err}`)
+            log.error(`Error in  bookings deleteBooking, error: ${err.message}`);
+            throw new Error(`Error in  bookings deleteBooking, error: ${err}`)
         });;
 
         res.status(200).send(allDebtors);

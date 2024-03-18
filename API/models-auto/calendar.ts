@@ -7,9 +7,9 @@ export interface calendarAttributes {
   debtorID?: string;
   description?: string;
   doctorName?: number;
-  endDate?: string;
+  endDate?: Date;
   patientID?: string;
-  startDate?: string;
+  startDate?: Date;
   title?: string;
 }
 
@@ -24,9 +24,9 @@ export class calendar extends Model<calendarAttributes, calendarCreationAttribut
   debtorID?: string;
   description?: string;
   doctorName?: number;
-  endDate?: string;
+  endDate?: Date;
   patientID?: string;
-  startDate?: string;
+  startDate?: Date;
   title?: string;
 
 
@@ -54,7 +54,7 @@ export class calendar extends Model<calendarAttributes, calendarCreationAttribut
       allowNull: true
     },
     endDate: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: true
     },
     patientID: {
@@ -62,7 +62,7 @@ export class calendar extends Model<calendarAttributes, calendarCreationAttribut
       allowNull: true
     },
     startDate: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.DATE,
       allowNull: true
     },
     title: {
