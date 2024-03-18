@@ -22,5 +22,19 @@
 ![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/e8a2a951-f6a4-43b1-8397-6019cc9af8d3)
 
 ### RUN API APP
+![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/dd7275d1-4ae1-4151-9e3b-380c33d7b4f5)
+
+## Manual create db
+
+### Docker DB Container
+![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/182b9749-7a2e-4195-9af1-af15fd7796b3)
+
+### Execute DB Container
+![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/4ddb86fb-d090-4eda-8eb2-e9531378a70c)
+
+### Run psql script to populate DB
+![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/3fad87df-16be-44b2-b2da-1f7a1ef8bb45)
+
+
 
 
