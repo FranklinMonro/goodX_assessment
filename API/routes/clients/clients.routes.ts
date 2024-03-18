@@ -15,13 +15,13 @@ class ClientsRouter {
     constructor() {
         this.router.get('/debtorsall', jwtTokenVerify, getDebtorsAll);
 
-        this.router.post('/debtor', jwtTokenVerify, postDebtor);
+        this.router.post('', jwtTokenVerify, postDebtor);
 
-        this.router.get('/debtor', jwtTokenVerify, getDebtor);
+        this.router.get('', jwtTokenVerify, getDebtor);
 
-        this.router.put('/debtor', jwtTokenVerify, putClient);
+        this.router.put('', jwtTokenVerify, putClient);
 
-        this.router.delete('/debtor', jwtTokenVerify, deleteClient);
+        this.router.delete('', jwtTokenVerify, deleteClient);
     }
 }
 

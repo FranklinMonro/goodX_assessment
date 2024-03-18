@@ -56,7 +56,8 @@
             ],
             "styles": [
               "src/styles.scss",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/devextreme/dist/css/dx.light.css"
             ],
             "scripts": []
           },

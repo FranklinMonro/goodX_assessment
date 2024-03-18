@@ -19,6 +19,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
+import { DxSchedulerModule } from 'devextreme-angular'; 
+
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { ListComponent } from './list/list.component';
@@ -55,6 +57,7 @@ import { BookingsComponent } from './bookings/bookings.component';
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
+    DxSchedulerModule,
     HomeRoutingModule
   ]
 })

@@ -34,10 +34,9 @@ const postDebtor = async (req: Request, res: Response, next: NextFunction): Prom
             telephone = 0,
             patients,
         } = req.body as Debtor;
-        const mainDebtor: DebtorPatients = patients!.filter((ele) => ele.name === undefined)![0];
+        const mainDebtor: DebtorPatients = patients!.filter((ele) => ele.name === undefined || ele.main)![0];
         const patientsFilter: DebtorPatients[] = patients!
-            .map((ele) => (ele.name !== undefined && ele.name !== '' ? ele : {}))
-            .filter((obj) => Object.entries(obj).length > 0)!;
+            .filter((ele) => !ele.main)
         const debtorUUID = randomUUID()
         const createDebtor = await clients.create(
             {
@@ -56,7 +55,7 @@ const postDebtor = async (req: Request, res: Response, next: NextFunction): Prom
             log.error(`Error in clients postDebtor createDebtor, error: ${err.message}`);
             throw new Error(`Error in clients postDebtor createDebtor, error: ${err}`)
         });
-        
+
         if (Object.entries(createDebtor.toJSON()).length === 0) {
             res.sendStatus(422);
             return;
@@ -91,6 +90,7 @@ const postDebtor = async (req: Request, res: Response, next: NextFunction): Prom
 
 const getDebtor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
+        console.log('getDebtor')
         const { clientID } = req.query;
 
         const debtor = await clients.findOne({
@@ -135,23 +135,41 @@ const getDebtor = async (req: Request, res: Response, next: NextFunction): Promi
 
 const putClient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const { patients } = req.body as Debtor;
+        const { id: MainID, debtor = '', telephone = undefined,  patients } = req.body as Debtor;
         const mainPatient = patients?.filter((pat) => pat.main)[0] as Debtor;
         patients?.forEach(async (pat) => {
-            console.log(pat);
+            if (pat.id === '') {
+                await clients.create(
+                    {
+                        id: randomUUID(),
+                        debtor,
+                        telephone,
+                        debtorID: MainID,
+                        name: pat.name,
+                        main: false,
+                        relationship: pat.relationship,
+                        active: true,
+                    },  
+                    {
+                        raw: true,
+                }).catch((err: ErrorEvent) => {
+                    log.error(`Error in clients postDebtor create patient, error: ${err.message}`);
+                    throw new Error(`Error in clients postDebtor create patient, error: ${err}`)
+                });
+            }
             await clients.update({
                 name: pat.name,
                 main: pat.main,
                 relationship: pat.relationship,
-                debtorID: mainPatient.id,
+                debtorID: MainID,
                 debtor: mainPatient.debtor,
             }, {
                 where: {
                     id: pat.id,
                 },
             }).catch((err: ErrorEvent) => {
-                log.error(`Error in clients putClient, error: ${err.message}`);
-                throw new Error(`Error in clients putClient, error: ${err}`)
+                log.error(`Error in clients putClient update, error: ${err.message}`);
+                throw new Error(`Error in clients putClient update, error: ${err}`)
             });
         });
         res.status(201);

@@ -36,6 +36,24 @@ const appLogger = createLogger({
     },
 });
 
+const bookingLogger = createLogger({
+    transports: [
+        new transports.File({
+            dirname: 'logs',
+            filename: 'bookingLogger.log',
+        }),
+    ],
+    format: format.combine(
+        format.timestamp(),
+        format.printf(({
+            timestamp, level, message, service,
+        }) => `[${timestamp}] ${service} ${level}: ${message}`),
+    ),
+    defaultMeta: {
+        service: 'WinstonExample',
+    },
+});
+
 const configLogger = createLogger({
     transports: [
         new transports.File({
@@ -129,6 +147,7 @@ const serverLogger = createLogger({
 export {
     authenticateLogger,
     appLogger,
+    bookingLogger,
     configLogger,
     clientsLogger,
     errorHandlerLogger,

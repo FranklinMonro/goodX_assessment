@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -41,15 +41,16 @@ export class AddComponent implements OnInit, OnDestroy {
     private homeService: HomeService,
     private formBuilder: FormBuilder,
     private toastrService: ToastrService,
+    private dialogRef: MatDialogRef<AddComponent>,
     ) {
       this.relationshipOptions = this.homeService.getRelaitionshipOptions();
       this.mainOptions = this.homeService.getMainOptions();
-      this.dialogType = this.data.clientID !== '' || this.data.clientID !== null ? 'EDIT': 'ADD';
+      this.dialogType = this.data.clientID !== '' && this.data.clientID !== null ? 'EDIT': 'ADD';
     }
 
   ngOnInit(): void {
     this.createDebtorForm();
-    if (this.data.clientID !== '' || this.data.clientID !== null) {
+    if (this.data.clientID !== '' && this.data.clientID !== null) {
       this.getClient(this.data.clientID!);
     }
   };
@@ -197,6 +198,7 @@ export class AddComponent implements OnInit, OnDestroy {
         this.loadSpinner = false;
         if (response.status === 201) {
           this.toastrService.success('Client has been added', 'SUCCESS');
+          this.dialogRef.close(true);
           return;
         }
         this.toastrService.warning('Client has not been added', 'WARNING');
@@ -222,6 +224,7 @@ export class AddComponent implements OnInit, OnDestroy {
         this.loadSpinner = false;
         if (response.status === 201) {
           this.toastrService.success('Client has been updated', 'SUCCESS');
+          this.dialogRef.close(true);
           return;
         }
         this.toastrService.warning('Client has not been updated', 'WARNING');
