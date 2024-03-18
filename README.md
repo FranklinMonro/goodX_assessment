@@ -32,5 +32,9 @@
 ### Execute DB Container
 ![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/4ddb86fb-d090-4eda-8eb2-e9531378a70c)
 
+### Run psql script to populate DB
+![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/3fad87df-16be-44b2-b2da-1f7a1ef8bb45)
+
+
 
 
