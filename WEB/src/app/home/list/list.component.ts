@@ -103,8 +103,8 @@ export class ListComponent implements OnInit, OnDestroy {
       data: {
         clientID,
       },
-      width: '50%',
-      height: '70%'
+      width: '90%',
+      height: '90%'
     });
 
     dialogRef.afterClosed().subscribe((resp) => {

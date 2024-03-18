@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 
 import { clientsLogger as log } from '../../server/winston';
 import { Debtor, DebtorPatients } from './clients.interfaces';
-import {  SEQUILIZE_NEW } from '../../server/config';
+import { SEQUILIZE_NEW } from '../../server/config';
 import { initModels } from '../../models-auto/init-models';
 
 const { clients } = initModels(SEQUILIZE_NEW);
@@ -91,43 +91,88 @@ const postDebtor = async (req: Request, res: Response, next: NextFunction): Prom
 
 const getDebtor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        
+        const { clientID } = req.query;
+
+        const debtor = await clients.findOne({
+            where: {
+                id: clientID as string,
+            },
+            raw: true,
+        }).catch((err: ErrorEvent) => {
+            log.error(`Error in clients getDebtor, debtor, error: ${err.message}`);
+            throw new Error(`Error in clients getDebtor, debtor, error: ${err}`)
+        });
+
+        const patients = await clients.findAll({
+            where: {
+                debtorID: clientID as string,
+            },
+            raw: true,
+        }).catch((err: ErrorEvent) => {
+            log.error(`Error in clients getDebtor, patients, error: ${err.message}`);
+            throw new Error(`Error in clients getDebtor, patients, error: ${err}`)
+        });
+
+        const debtorSend: Debtor = {};
+        debtorSend.id = debtor?.id;
+        debtorSend.debtor = debtor?.debtor.trim();
+        debtorSend.telephone = debtor?.telephone;
+        debtorSend.patients = patients.map((pat) => {
+            return {
+                id: pat.id,
+                name: pat.name!.trim(),
+                main: pat.main,
+                relationship: pat.relationship!.trim(),
+            };
+        });
+
+        res.status(201).send(debtorSend);
     } catch (error) {
         log.log('error', `URL ${req.baseUrl}, error: ${error}`);
         next(error);
     }
 };
 
-const putDebtor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const putClient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        
+        const { patients } = req.body as Debtor;
+        const mainPatient = patients?.filter((pat) => pat.main)[0] as Debtor;
+        patients?.forEach(async (pat) => {
+            console.log(pat);
+            await clients.update({
+                name: pat.name,
+                main: pat.main,
+                relationship: pat.relationship,
+                debtorID: mainPatient.id,
+                debtor: mainPatient.debtor,
+            }, {
+                where: {
+                    id: pat.id,
+                },
+            }).catch((err: ErrorEvent) => {
+                log.error(`Error in clients putClient, error: ${err.message}`);
+                throw new Error(`Error in clients putClient, error: ${err}`)
+            });
+        });
+        res.status(201);
     } catch (error) {
         log.log('error', `URL ${req.baseUrl}, error: ${error}`);
         next(error);
     }
 };
 
-const deleteDebtor = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+const deleteClient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        
-    } catch (error) {
-        log.log('error', `URL ${req.baseUrl}, error: ${error}`);
-        next(error);
-    }
-};
-
-const putPatient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-        
-    } catch (error) {
-        log.log('error', `URL ${req.baseUrl}, error: ${error}`);
-        next(error);
-    }
-};
-
-const deletePatient = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-        
+        const { clientID } = req.query;
+        const makeInActive = await clients.update({ active: false }, {
+            where: {
+                id: clientID as string,
+            },
+        });
+        if (makeInActive[0] === 0) {
+            res.status(404);
+        }
+        res.status(202).send(makeInActive[0]);
     } catch (error) {
         log.log('error', `URL ${req.baseUrl}, error: ${error}`);
         next(error);
@@ -138,8 +183,6 @@ export {
     getDebtorsAll,
     postDebtor,
     getDebtor,
-    putDebtor,
-    deleteDebtor,
-    putPatient,
-    deletePatient,
+    putClient,
+    deleteClient,
 }

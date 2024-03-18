@@ -142,7 +142,6 @@ export class AddComponent implements OnInit, OnDestroy {
   };
 
   compareFn(op1: AddDialogDebtorPatients, op2: AddDialogDebtorPatients) {
-    console.log('op1', op1, 'op2', op2)
     return op1.relationship !== op2.relationship;
   }
 
@@ -178,11 +177,20 @@ export class AddComponent implements OnInit, OnDestroy {
     };
   };
 
-  public addClient = (): void => {
+  public submitClient = (): void => {
     if (this.debtorForm?.invalid) {
       this.toastrService.warning('Check form', 'WARNING');
       return;
     }
+    
+    if (this.dialogType === 'ADD') {
+      this.postNewClient();
+    } else {
+      this.putEditClient();
+    }
+  }
+
+  private postNewClient = (): void => {
     this.loadSpinner = true;
     this.subscription = this.homeService.postNewDebtor(this.debtorForm?.value).subscribe({
       next: (response: HttpResponse<AddDialogDebtor>) => {
@@ -200,6 +208,31 @@ export class AddComponent implements OnInit, OnDestroy {
           return;
         }
         this.toastrService.error(`Error in adding client, error: ${error.message}`, 'ERROR')
+      },
+      complete: () => {
+        this.loadSpinner = false;
+      }
+    });
+  }
+
+  private putEditClient = (): void => {
+    this.loadSpinner = true;
+    this.subscription = this.homeService.putClient(this.debtorForm?.value).subscribe({
+      next: (response: HttpResponse<AddDialogDebtor>) => {
+        this.loadSpinner = false;
+        if (response.status === 201) {
+          this.toastrService.success('Client has been updated', 'SUCCESS');
+          return;
+        }
+        this.toastrService.warning('Client has not been updated', 'WARNING');
+      },
+      error: (error: ErrorEvent) => {
+        this.loadSpinner = false;
+        if (error.message.includes('404')) {
+          this.toastrService.warning('Client has not been updated', 'WARNING');
+          return;
+        }
+        this.toastrService.error(`Error in updating client, error: ${error.message}`, 'ERROR')
       },
       complete: () => {
         this.loadSpinner = false;
