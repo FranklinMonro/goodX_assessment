@@ -81,17 +81,20 @@ const getBookingsAll = async (req: Request, res: Response, next: NextFunction): 
 
 const postBooking = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const allDebtors = await clients.findAll({
-            where: {
-                active: true,
-                main: true,
-            },
-        }).catch((err: ErrorEvent) => {
-            log.error(`Error in clients getDebtorsAll allDebtors, error: ${err.message}`);
-            throw new Error(`Error in clients getDebtorsAll allDebtors, error: ${err}`)
-        });;
+        console.log(req.body);
+        // const data: 
+        // const allDebtors = await clients.findAll({
+        //     where: {
+        //         active: true,
+        //         main: true,
+        //     },
+        // }).catch((err: ErrorEvent) => {
+        //     log.error(`Error in clients getDebtorsAll allDebtors, error: ${err.message}`);
+        //     throw new Error(`Error in clients getDebtorsAll allDebtors, error: ${err}`)
+        // });;
 
-        res.status(200).send(allDebtors);
+        // res.status(200).send(allDebtors);
+        res.status(201);
     } catch (error) {
         log.log('error', `URL ${req.baseUrl}, error: ${error}`);
         next(error);

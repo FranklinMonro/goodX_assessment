@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 
@@ -20,19 +19,12 @@ export type clientsCreationAttributes = Optional<clientsAttributes, clientsOptio
 
 export class clients extends Model<clientsAttributes, clientsCreationAttributes> implements clientsAttributes {
   id!: string;
-
   debtor!: string;
-
   telephone?: number;
-
   debtorID?: string;
-
   name?: string;
-
   main?: boolean;
-
   relationship?: string;
-
   active?: boolean;
 
 
