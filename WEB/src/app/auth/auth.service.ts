@@ -1,4 +1,4 @@
-import { HttpResponse, HttpErrorResponse, HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpResponse, HttpErrorResponse, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap, catchError, map, BehaviorSubject } from 'rxjs';
 import { DateTime } from 'luxon';

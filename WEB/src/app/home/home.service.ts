@@ -1,4 +1,9 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { map, catchError, Observable } from 'rxjs';
+
+import environment from '../../enviroments/environment';
+import { AddDialogDebtor } from './add/add.interface';
 
 export interface DataType {
   value: string | number | boolean,
@@ -10,7 +15,7 @@ export interface DataType {
 })
 export class HomeService {
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   public getRelaitionshipOptions = (): DataType[] => {
     return [
@@ -27,4 +32,14 @@ export class HomeService {
       { value: false, name: 'No' },
     ];
   };
+
+  public postNewDebtor = (debtorForm: AddDialogDebtor): Observable<any> => {
+    return this.httpClient.post<AddDialogDebtor>(`${environment.urlBase}auth/register`, debtorForm, 
+    { observe: 'response' }).pipe(
+      map((response: HttpResponse<AddDialogDebtor>) => {
+        return response.status;
+      }),
+      catchError((error: HttpErrorResponse) =>  { throw new Error(error.message); }),
+    );
+  }
 }

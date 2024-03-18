@@ -6,9 +6,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
-import { AddDialog, AddDialogDebtorPatients } from './add.interface';
+import { AddDialog, AddDialogDebtor, AddDialogDebtorPatients } from './add.interface';
 import { DataType, HomeService } from '../home.service';
 import { ToastrService } from 'ngx-toastr';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-add',
@@ -56,12 +57,18 @@ export class AddComponent implements OnInit, OnDestroy {
     })
   };
 
-  private createPatientForm = (patient: AddDialogDebtorPatients ) => {
+  private createPatientForm = (patient: AddDialogDebtorPatients) => {
+    const {
+      id: patID = '',
+      name: patName = '',
+      main: patMain = false,
+      relaitionship: patRel = '',
+    } = patient;
     return this.formBuilder.group({
-      id: [patient.id! || null],
-      name: [patient.name! || null],
-      main: [patient.main! || null],
-      relationship: [patient.relaitionship! || null],
+      id: [patID],
+      name: [patName],
+      main: [patMain],
+      relationship: [patRel],
     });
   };
 
@@ -77,7 +84,7 @@ export class AddComponent implements OnInit, OnDestroy {
         main: true,
       }));
     } else {
-      this.patientsControl.push([]);
+      this.patientsControl.push(this.createPatientForm({}));
     }
     this.dataSource = new MatTableDataSource(this.patientsControl.value);
   }
@@ -91,16 +98,56 @@ export class AddComponent implements OnInit, OnDestroy {
     }
   };
 
+  public checkIfDebtor = (rowIndex: number, formControl: string): boolean => {
+    const debtorName = this.debtorForm?.get('debtor')?.value;
+    const patientName = this.patientsControl.at(rowIndex).get('name')?.value;
+    if (debtorName === patientName) {
+      this.patientsControl.at(rowIndex).get(formControl)?.disable();
+      return true
+    }
+
+    this.patientsControl.at(rowIndex).get(formControl)?.enable();
+    return false;
+  };
+
   compareFn(op1: any, op2: any) {
-    console.log('compareFn', op1, op2);
+    console.log('compareFn', op1, op2)
     return op1.name === op2.name;
   }
 
   public removePatient = (patientIndex: number): void => {
     console.log('removePatient, index', patientIndex);
+    this.patientsControl.removeAt(patientIndex);
+    this.dataSource = new MatTableDataSource(this.patientsControl.value);
   }
 
   public onSubmit = (): void => {
+    if (this.debtorForm?.invalid) {
+      this.toastrService.warning('Check form', 'WARNING');
+      return;
+    }
+    this.loadSpinner = true;
+    this.homeService.postNewDebtor(this.debtorForm?.value).subscribe({
+      next: (response: HttpResponse<AddDialogDebtor>) => {
+        this.loadSpinner = false;
+        if (response.status === 200) {
+          this.toastrService.success('Log In', 'SUCCESS');
+          return;
+        }
+        this.toastrService.warning('Something went wrong in log in', 'WARNING');
+      },
+      error: (error: ErrorEvent) => {
+        this.loadSpinner = false;
+        if (error.message.includes('404')) {
+          this.toastrService.warning('Log in details is incorrect', 'WARNING');
+          return;
+        }
+        this.toastrService.error(`Error in login, error: ${error.message}`, 'ERROR')
+      },
+      complete: () => {
+        this.loadSpinner = false;
+      }
+    })
 
   }
 
