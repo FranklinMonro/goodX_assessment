@@ -1,6 +1,5 @@
 interface AddDialog {
-    id?: string;
-    debtor?: AddDialogDebtor;
+    clientID?: string;
 }
 
 interface AddDialogDebtor {

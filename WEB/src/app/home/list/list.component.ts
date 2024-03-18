@@ -9,7 +9,6 @@ import { AddComponent } from '../add/add.component';
 import { HomeService } from '../home.service';
 import { Subscription } from 'rxjs';
 import { AddDialogDebtor } from '../add/add.interface';
-import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-list',
@@ -23,7 +22,7 @@ export class ListComponent implements OnInit, OnDestroy {
 
   subscription: Subscription | undefined;
   
-  displayedColumns: string[] = ['name', 'main', 'remove'];
+  displayedColumns: string[] = ['name', 'main', 'edit', 'remove'];
 
   dataSource: MatTableDataSource<AddDialogDebtor[]> = new MatTableDataSource<AddDialogDebtor[]>([]);
   constructor(
@@ -80,7 +79,7 @@ export class ListComponent implements OnInit, OnDestroy {
         this.loadSpinner = false;
         if (response.status === 202) {
           this.toastrService.success('Client has been deleted', 'SUCCESS');
-          this.dataSource = new MatTableDataSource(response.body);
+          this.getDebtorsList();
           return;
         }
         this.toastrService.warning('Client has not been deleted', 'WARNING');
@@ -99,10 +98,19 @@ export class ListComponent implements OnInit, OnDestroy {
     });
   };
 
-  public openAddClientDialog = (): void => {
+  public openAddClientDialog = (clientID: string | null): void => {
     const dialogRef = this.dialog.open(AddComponent, {
+      data: {
+        clientID,
+      },
       width: '50%',
       height: '70%'
+    });
+
+    dialogRef.afterClosed().subscribe((resp) => {
+      if (resp) {
+        this.getDebtorsList();
+      }
     })
   };
 

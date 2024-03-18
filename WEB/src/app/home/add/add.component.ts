@@ -34,6 +34,8 @@ export class AddComponent implements OnInit, OnDestroy {
 
   dataSource: MatTableDataSource<AddDialogDebtorPatients[]> = new MatTableDataSource<AddDialogDebtorPatients[]>([]);
 
+  dialogType: string = 'ADD';
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: AddDialog,
     private homeService: HomeService,
@@ -42,10 +44,39 @@ export class AddComponent implements OnInit, OnDestroy {
     ) {
       this.relationshipOptions = this.homeService.getRelaitionshipOptions();
       this.mainOptions = this.homeService.getMainOptions();
+      this.dialogType = this.data.clientID !== '' || this.data.clientID !== null ? 'EDIT': 'ADD';
     }
 
   ngOnInit(): void {
     this.createDebtorForm();
+    if (this.data.clientID !== '' || this.data.clientID !== null) {
+      this.getClient(this.data.clientID!);
+    }
+  };
+
+  private getClient = (clientID: string): void => {
+    this.loadSpinner = true;
+      this.subscription = this.homeService.getClient(clientID).subscribe({
+        next: (response: AddDialogDebtor) => {
+          this.loadSpinner = false;
+          this.debtorForm?.patchValue({id: response.id, debtor: response.debtor, telephone: response.telephone});
+          response.patients?.forEach((pat) => {
+            this.patientsControl.push(this.createPatientForm(pat));
+          });
+          this.dataSource = new MatTableDataSource(this.patientsControl.value);
+        },
+        error: (error: ErrorEvent) => {
+          this.loadSpinner = false;
+          if (error.message.includes('404')) {
+            this.toastrService.warning('Client has not been deleted', 'WARNING');
+            return;
+          }
+          this.toastrService.error(`Error deleting client, error: ${error.message}`, 'ERROR')
+        },
+        complete: () => {
+          this.loadSpinner = false;
+        }
+      });
   };
 
   private createDebtorForm = (): void => {
@@ -77,7 +108,6 @@ export class AddComponent implements OnInit, OnDestroy {
   }
 
   public addPatient = (): void => {
-    
     if (this.patientsControl.controls.length === 0) {
       this.patientsControl.push(this.createPatientForm({
         name: this.debtorForm?.get('debtor')?.value,
@@ -111,8 +141,9 @@ export class AddComponent implements OnInit, OnDestroy {
     return false;
   };
 
-  compareFn(op1: any, op2: any) {
-    return op1.name === op2.name;
+  compareFn(op1: AddDialogDebtorPatients, op2: AddDialogDebtorPatients) {
+    console.log('op1', op1, 'op2', op2)
+    return op1.relationship !== op2.relationship;
   }
 
   public removePatient = (patientIndex: number): void => {

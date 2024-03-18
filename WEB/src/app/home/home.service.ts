@@ -53,6 +53,16 @@ export class HomeService {
     );
   }
 
+  public getClient = (clientID: string): Observable<AddDialogDebtor> => {
+    return this.httpClient.get<AddDialogDebtor>(`${environment.urlBase}clients/debtor`,
+    { params: { clientID }, observe: 'response' }).pipe(
+      map((response: any) => {
+        return response.body;
+      }),
+      catchError((error: HttpErrorResponse) =>  { throw new Error(error.message); }),
+    );
+  }
+
   public deleteClient = (clientID: string): Observable<any> => {
     return this.httpClient.delete<boolean>(`${environment.urlBase}clients/debtor`,
     { params: { clientID }, observe: 'response' }).pipe(
