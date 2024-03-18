@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Add Client</h2>
 <div *ngIf="debtorForm">
-    <form (ngSubmit)="onSubmit()" [formGroup]="debtorForm">
+    <form [formGroup]="debtorForm">
         <mat-dialog-content class="mat-typography">
             <div class="client-form">
                 <mat-divider></mat-divider>
@@ -92,8 +92,8 @@
         </mat-dialog-content>
         <mat-divider></mat-divider>
         <mat-dialog-actions align="end">
-            <button mat-button mat-dialog-close id="cancel-button">Cancel</button>
-            <button mat-button [mat-dialog-close]="true" id="save-button">Save</button>
+            <button mat-button [mat-dialog-close]="true" id="save-button" (click)="addClient()">Save</button>
+            <button mat-button [mat-dialog-close]="false" id="cancel-button">Cancel</button>
         </mat-dialog-actions>
     </form>
 </div>

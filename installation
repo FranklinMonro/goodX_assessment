@@ -8,4 +8,6 @@ npm install
 npm run dev
 
 sequelize-auto create db models
-node_modules\.bin\sequelize-auto -h db -d postgres -u postgres -x postgres --dialect postgres -o "./models-auto" -l ts
+npm install pg -g
+npm install sequelize-auto -g
+sequelize-auto -h db -d goodx -u postgres -x postgres --dialect postgres -o "./models-auto" -l ts

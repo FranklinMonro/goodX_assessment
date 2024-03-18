@@ -14,7 +14,7 @@ interface AddDialogDebtorPatients {
     id?: string;
     name?: string;
     main?: boolean;
-    relaitionship?: string;
+    relationship?: string;
 }
 
 export {

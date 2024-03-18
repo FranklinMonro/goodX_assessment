@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
@@ -62,13 +62,13 @@ export class AddComponent implements OnInit, OnDestroy {
       id: patID = '',
       name: patName = '',
       main: patMain = false,
-      relaitionship: patRel = '',
+      relationship: patRel = '',
     } = patient;
     return this.formBuilder.group({
       id: [patID],
-      name: [patName],
-      main: [patMain],
-      relationship: [patRel],
+      name: [patName, [Validators.required]],
+      main: [patMain, [Validators.required]],
+      relationship: [patRel, [Validators.required]],
     });
   };
 
@@ -83,6 +83,7 @@ export class AddComponent implements OnInit, OnDestroy {
         name: this.debtorForm?.get('debtor')?.value,
         main: true,
       }));
+      
     } else {
       this.patientsControl.push(this.createPatientForm({}));
     }
@@ -111,30 +112,28 @@ export class AddComponent implements OnInit, OnDestroy {
   };
 
   compareFn(op1: any, op2: any) {
-    console.log('compareFn', op1, op2)
     return op1.name === op2.name;
   }
 
   public removePatient = (patientIndex: number): void => {
-    console.log('removePatient, index', patientIndex);
     this.patientsControl.removeAt(patientIndex);
     this.dataSource = new MatTableDataSource(this.patientsControl.value);
   }
 
-  public onSubmit = (): void => {
+  public addClient = (): void => {
     if (this.debtorForm?.invalid) {
       this.toastrService.warning('Check form', 'WARNING');
       return;
     }
     this.loadSpinner = true;
-    this.homeService.postNewDebtor(this.debtorForm?.value).subscribe({
+    this.subscription = this.homeService.postNewDebtor(this.debtorForm?.value).subscribe({
       next: (response: HttpResponse<AddDialogDebtor>) => {
         this.loadSpinner = false;
-        if (response.status === 200) {
-          this.toastrService.success('Log In', 'SUCCESS');
+        if (response.status === 201) {
+          this.toastrService.success('Client has been added', 'SUCCESS');
           return;
         }
-        this.toastrService.warning('Something went wrong in log in', 'WARNING');
+        this.toastrService.warning('Client has not been added', 'WARNING');
       },
       error: (error: ErrorEvent) => {
         this.loadSpinner = false;
@@ -147,8 +146,7 @@ export class AddComponent implements OnInit, OnDestroy {
       complete: () => {
         this.loadSpinner = false;
       }
-    })
-
+    });
   }
 
   ngOnDestroy(): void {

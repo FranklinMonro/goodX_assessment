@@ -33,11 +33,21 @@ export class HomeService {
     ];
   };
 
-  public postNewDebtor = (debtorForm: AddDialogDebtor): Observable<any> => {
-    return this.httpClient.post<AddDialogDebtor>(`${environment.urlBase}auth/register`, debtorForm, 
+  public getDebtorAll = (): Observable<any> => {
+    return this.httpClient.get<AddDialogDebtor>(`${environment.urlBase}clients/debtorsall`, 
     { observe: 'response' }).pipe(
       map((response: HttpResponse<AddDialogDebtor>) => {
-        return response.status;
+        return response;
+      }),
+      catchError((error: HttpErrorResponse) =>  { throw new Error(error.message); }),
+    );
+  }
+
+  public postNewDebtor = (debtorForm: AddDialogDebtor): Observable<any> => {
+    return this.httpClient.post<AddDialogDebtor>(`${environment.urlBase}clients/debtor`, debtorForm, 
+    { observe: 'response' }).pipe(
+      map((response: HttpResponse<AddDialogDebtor>) => {
+        return response;
       }),
       catchError((error: HttpErrorResponse) =>  { throw new Error(error.message); }),
     );
