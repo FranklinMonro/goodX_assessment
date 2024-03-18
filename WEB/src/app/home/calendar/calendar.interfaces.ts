@@ -1,12 +1,13 @@
 interface Appointment {
-    title?: string;
-    startDate?: Date;
+    id?: string;
+    allDay?: boolean;
+    debtorID?: string;
+    description?: string;
+    doctorName: 1
     endDate?: Date;
-    dayLong?: boolean;
-    recurrence?: string;
-    doctor?: string;
-    debtor?: string;
-    patient?: string;
+    patientID?: string;
+    startDate?: Date;
+    title?: string;
 }
 
 interface BookingClient {
