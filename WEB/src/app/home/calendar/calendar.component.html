@@ -1,0 +1,27 @@
+<mat-spinner class="login-spinner" *ngIf="loadSpinner"></mat-spinner>
+
+<div *ngIf="!loadSpinner">
+    <dx-scheduler 
+        id="scheduler"
+        [dataSource]="appointments!"
+        textExpr="title"
+        (onAppointmentFormOpening)="selectPatients($event)"
+        [(currentDate)]="currentDate">
+        <dxi-resource
+            fieldExpr="sourceId"
+            [allowMultiple]="false"
+            [dataSource]="doctorOptions!"
+            label="Doctor"
+        >
+        </dxi-resource>
+        <dxi-resource
+            displayExpr="name"
+            [allowMultiple]="false"
+            [dataSource]="mainSource!"
+            label="Patient"
+            
+        >
+        </dxi-resource>
+        <!-- Configuration goes here -->
+    </dx-scheduler>
+</div>
