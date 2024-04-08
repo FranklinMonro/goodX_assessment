@@ -36,5 +36,3 @@
 ![image](https://github.com/FranklinMonro/goodX_assessment/assets/34055502/3fad87df-16be-44b2-b2da-1f7a1ef8bb45)
 
 
-
-

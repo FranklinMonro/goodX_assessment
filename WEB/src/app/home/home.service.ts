@@ -4,7 +4,7 @@ import { map, catchError, Observable } from 'rxjs';
 
 import environment from '../../enviroments/environment';
 import { AddDialogDebtor } from './add/add.interface';
-import { BookingClient } from './calendar/calendar.interfaces';
+import { Appointment, BookingClient } from './calendar/calendar.interfaces';
 
 export interface DataType {
   value: string | number | boolean,
@@ -120,18 +120,8 @@ export class HomeService {
     );
   }
 
-  public getBookings = (clientID: string): Observable<AddDialogDebtor> => {
-    return this.httpClient.get<AddDialogDebtor>(`${environment.urlBase}bookings/bookingsall`,
-    { params: { clientID }, observe: 'response' }).pipe(
-      map((response: any) => {
-        return response.body;
-      }),
-      catchError((error: HttpErrorResponse) =>  { throw new Error(error.message); }),
-    );
-  }
-
-  public postBooking = (clientID: string): Observable<AddDialogDebtor> => {
-    return this.httpClient.post<AddDialogDebtor>(`${environment.urlBase}bookings`,
+  public getBookings = (): Observable<Appointment[]> => {
+    return this.httpClient.get<Appointment[]>(`${environment.urlBase}bookings/bookingsall`,
     { observe: 'response' }).pipe(
       map((response: any) => {
         return response.body;
@@ -140,8 +130,18 @@ export class HomeService {
     );
   }
 
-  public getBooking = (bookingID: string): Observable<AddDialogDebtor> => {
-    return this.httpClient.get<AddDialogDebtor>(`${environment.urlBase}bookings`,
+  public postBooking = (appointmendData: Appointment): Observable<Appointment> => {
+    return this.httpClient.post<Appointment>(`${environment.urlBase}bookings`, appointmendData,
+    { observe: 'response' }).pipe(
+      map((response: any) => {
+        return response.body;
+      }),
+      catchError((error: HttpErrorResponse) =>  { throw new Error(error.message); }),
+    );
+  }
+
+  public getBooking = (bookingID: string): Observable<Appointment> => {
+    return this.httpClient.get<Appointment>(`${environment.urlBase}bookings`,
     { params: { bookingID }, observe: 'response' }).pipe(
       map((response: any) => {
         return response.body;
@@ -150,8 +150,8 @@ export class HomeService {
     );
   }
 
-  public putBookings = (bookingID: string): Observable<AddDialogDebtor> => {
-    return this.httpClient.get<AddDialogDebtor>(`${environment.urlBase}bookings`,
+  public putBookings = (bookingID: string): Observable<Appointment> => {
+    return this.httpClient.get<Appointment>(`${environment.urlBase}bookings`,
     { params: { bookingID }, observe: 'response' }).pipe(
       map((response: any) => {
         return response.body;
@@ -160,8 +160,8 @@ export class HomeService {
     );
   }
 
-  public deleteBookings = (bookingID: string): Observable<AddDialogDebtor> => {
-    return this.httpClient.get<AddDialogDebtor>(`${environment.urlBase}bookings`,
+  public deleteBookings = (bookingID: string): Observable<Appointment> => {
+    return this.httpClient.get<Appointment>(`${environment.urlBase}bookings`,
     { params: { bookingID }, observe: 'response' }).pipe(
       map((response: any) => {
         return response.body;

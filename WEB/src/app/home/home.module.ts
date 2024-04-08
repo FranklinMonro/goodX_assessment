@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -20,6 +20,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { DxSchedulerModule } from 'devextreme-angular'; 
+import { DxSelectBoxModule } from 'devextreme-angular';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
@@ -28,6 +29,10 @@ import { AddComponent } from './add/add.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { BookingsComponent } from './bookings/bookings.component';
 
+@Pipe({ name: 'apply' })
+export class ApplyPipe<TArgs, TReturn> implements PipeTransform {
+  transform(func: ((...args: TArgs[]) => TReturn), ...args: TArgs[]): TReturn { return func(...args); }
+}
 
 @NgModule({
   declarations: [
@@ -35,7 +40,8 @@ import { BookingsComponent } from './bookings/bookings.component';
     ListComponent,
     AddComponent,
     CalendarComponent,
-    BookingsComponent
+    BookingsComponent,
+    ApplyPipe,
   ],
   imports: [
     CommonModule,
@@ -58,6 +64,7 @@ import { BookingsComponent } from './bookings/bookings.component';
     MatToolbarModule,
     MatTooltipModule,
     DxSchedulerModule,
+    DxSelectBoxModule,
     HomeRoutingModule
   ]
 })

@@ -1,23 +1,21 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Appointment, BookingClient, Patient } from './calendar.interfaces';
 import { Subscription } from 'rxjs';
-import { MatTableDataSource } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
-import { AddDialogDebtor } from '../add/add.interface';
-import { DataType, HomeService, Doctor } from '../home.service';
-import { DxSchedulerTypes } from 'devextreme-angular/ui/scheduler';
+import { HomeService, Doctor } from '../home.service';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.scss'
+  styleUrl: './calendar.component.scss',
 })
-export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
+
+export class CalendarComponent implements OnInit, OnDestroy {
   loadSpinner: boolean = false;
   subscription: Subscription | undefined;
   
-  appointments: Appointment[] | undefined;
+  appointmentsSource: Appointment[] | undefined;
 
   currentDate: Date = new Date();
 
@@ -29,7 +27,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
 
   mainPatient: string | undefined;
 
-  patientSource: Patient[] | undefined;
+  patientSource: any[] | undefined;
 
   constructor(
     private homeService: HomeService,
@@ -39,12 +37,9 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
     this.getAllClient();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
-  }
-
   ngOnInit(): void {
     this.getAllClient();
+    this.getAllBookings();
   }
 
   private getAllClient = (): void => {
@@ -54,6 +49,7 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
           this.loadSpinner = false;
           this.debtorSource = response;
           this.mainSource = this.debtorSource.map((debt) => debt.mainClient as Patient);
+          this.patientSource = this.debtorSource.map((debt) => debt.patientClients?.map((pat) => pat)[0]);
         },
         error: (error: ErrorEvent) => {
           this.loadSpinner = false;
@@ -69,10 +65,77 @@ export class CalendarComponent implements OnInit, OnDestroy, OnChanges {
       });
   };
 
-  public selectPatients = (data: DxSchedulerTypes.AppointmentFormOpeningEvent) => {
-    console.log('select patients', data)
+  private getAllBookings = (): void => {
+    this.loadSpinner = true;
+    this.subscription = this.homeService.getBookings().subscribe({
+      next: (response: Appointment[]) => {
+        this.appointmentsSource = response;
+        this.loadSpinner = false;
+      },
+      error: (error: ErrorEvent) => {
+        this.loadSpinner = false;
+        if (error.message.includes('404')) {
+          this.toastrService.warning('Appointment has not been added', 'WARNING');
+          return;
+        }
+        this.toastrService.error(`Error in adding appointment, error: ${error.message}`, 'ERROR')
+      },
+      complete: () => {
+        this.loadSpinner = false;
+      }
+    });
   }
-  
+
+  public onAppointmentAdding = (event: any) => {
+    this.loadSpinner = true;
+    this.subscription = this.homeService.postBooking(event.appointmentData).subscribe({
+      next: (response: Appointment) => {
+        if (response) {
+          this.toastrService.success('Appointment has been added', 'SUCCESS');
+        }
+        this.loadSpinner = false;
+      },
+      error: (error: ErrorEvent) => {
+        this.loadSpinner = false;
+        if (error.message.includes('404')) {
+          this.toastrService.warning('Appointment has not been added', 'WARNING');
+          return;
+        }
+        this.toastrService.error(`Error in adding appointment, error: ${error.message}`, 'ERROR')
+      },
+      complete: () => {
+        this.loadSpinner = false;
+      }
+    });
+  }
+
+  public editAppointment = (event: any) => {
+    this.loadSpinner = true;
+    this.subscription = this.homeService.putBookings(event.appointmentData).subscribe({
+      next: (response: Appointment) => {
+        if (response) {
+          this.toastrService.success('Appointment has been updated', 'SUCCESS');
+        }
+        this.loadSpinner = false;
+      },
+      error: (error: ErrorEvent) => {
+        this.loadSpinner = false;
+        if (error.message.includes('404')) {
+          this.toastrService.warning('Appointment has not been updated', 'WARNING');
+          return;
+        }
+        this.toastrService.error(`Error in updating appointment, error: ${error.message}`, 'ERROR')
+      },
+      complete: () => {
+        this.loadSpinner = false;
+      }
+    });
+  }
+
+  public deleteAppointment = (event: any) => {
+    console.log('deleteAppointment', event);
+  }
+
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
