@@ -6,7 +6,7 @@ services:
     container_name: goodx
     shm_size: '8gb'
     volumes:
-      - ../:/workspaces:cached
+      - ../../:/workspaces:cached
       
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"  
