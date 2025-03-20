@@ -1,41 +1,46 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-postgres
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-	"name": "Node.js & PostgreSQL",
+	"name": "Node.js & TypeScript",
+	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
 	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+	// The 'service' property is the name of the service for the container that VS Code should
+	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+	"service": "goodx",
+
+	// The 'workspaceFolder' property is the path VS Code should open by default when
+	// connected. Corresponds to a volume mount in .devcontainer/docker-compose.yml
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/",
 	"features": {
 		"ghcr.io/devcontainers/features/github-cli:1": {},
 		"ghcr.io/devcontainers/features/node:1": {},
-		"ghcr.io/devcontainers-contrib/features/angular-cli:2": {}
+		"ghcr.io/devcontainers-extra/features/prettier:1": {}
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// This can be used to network with other containers or with the host.
-	// "forwardPorts": [3000, 5432],
-
+	"forwardPorts": [5432, 5050, 4200, 3000],
+	
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "yarn install",
+	// "postCreateCommand": "npm install",
+	// // Use 'postStartCommand' to run commands after the container is started.
+	// "postStartCommand": "npm run dev",
 
 	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	"remoteUser": "root",
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"rangav.vscode-thunder-client",
-				"Angular.ng-template",
-				"johnpapa.Angular2",
 				"dbaeumer.vscode-eslint",
 				"esbenp.prettier-vscode",
-				"oderwat.indent-rainbow"
+				"Angular.ng-template",
+				"rangav.vscode-thunder-client"
 			]
 		}
 	}
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "vscode"
 }

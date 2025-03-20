@@ -1,19 +1,20 @@
 version: '3.8'
 
 services:
-  app:
-    image: mcr.microsoft.com/devcontainers/typescript-node:0-20
-    container_name: WEB_APP
-
+  goodx:
+    image: mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
+    container_name: goodx_app
+    shm_size: '8gb'
     volumes:
-      - ../..:/workspaces:cached
+      - ../../:/workspaces:cached
       
     # Overrides default command so things don't shut down after the process ends.
-    command: sleep infinity
+    command: /bin/sh -c "while sleep 1000; do :; done"  
 
     # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     network_mode: service:db
-
+    # enviroment:
+    #   - NODE_OPTIONS=--max_old_space_size=4096
     # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
     # (Adding the "ports" property to this file will not forward from a Codespace.)
 
@@ -30,10 +31,9 @@ services:
 
     # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
     # (Adding the "ports" property to this file will not forward from a Codespace.)
-
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: pgadmin4_container
+    container_name: pgadmin4
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: pgadmin@pgadmin.com
@@ -44,6 +44,14 @@ services:
       - db
     ports:
       - "5050:80"
+      
+  maildev:
+    image: maildev/maildev:latest
+    restart: always
+    ports:
+      - "8085:1080"
+      - "8025:1025"
+    
 
 volumes:
   postgres-data:
