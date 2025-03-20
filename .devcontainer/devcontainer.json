@@ -35,7 +35,8 @@
 			"extensions": [
 				"dbaeumer.vscode-eslint",
 				"esbenp.prettier-vscode",
-				"Angular.ng-template"
+				"Angular.ng-template",
+				"rangav.vscode-thunder-client"
 			]
 		}
 	}
