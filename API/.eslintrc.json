@@ -1,0 +1,30 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "prettier"
+  ],
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
+    "prettier" // Make sure to add "prettier" last
+  ],
+  "rules": {
+    // Customize rules as needed.  For example:
+    "no-console": "warn", // Warn on console.log
+    "import/prefer-default-export": "off", // Usually a good idea with TS
+    "@typescript-eslint/explicit-function-return-type": "warn", // Enforce return types
+    "prettier/prettier": "error", // This connects ESLint and Prettier
+    "import/extensions": ["error", "ignorePackages", {
+      "ts": "never" // Or "always" if you want extensions for .ts files
+    }]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  }
+}
