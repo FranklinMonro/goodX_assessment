@@ -3,7 +3,7 @@ version: '3.8'
 services:
   goodx:
     image: mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
-    container_name: goodx
+    container_name: goodx_app
     shm_size: '8gb'
     volumes:
       - ../../:/workspaces:cached
