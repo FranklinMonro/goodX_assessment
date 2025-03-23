@@ -9,7 +9,7 @@ import {
   JWT_TOKEN_EXPIRATION,
   SEQUILIZE_NEW,
 } from '../../server/config';
-import { initModels } from '../../models-auto/init-models';
+import { initModels } from '../../models-production/init-models';
 import { jwtTokenSign } from '../../server/jwtToken';
 
 const { users } = initModels(SEQUILIZE_NEW);
