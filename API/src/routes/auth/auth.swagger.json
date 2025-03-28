@@ -1,0 +1,93 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Authentication API",
+    "version": "1.0.0",
+    "description": "API for user authentication"
+  },
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string", "description": "The username for the new user" },
+                  "password": { "type": "string", "description": "The password for the new user" }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean",
+                  "description": "Indicates if the user was newly created"
+                }
+              }
+            }
+          },
+          "303": { "description": "User already exists" },
+          "422": { "description": "User has not been registered" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Login an existing user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": { "type": "string", "description": "The username of the user" },
+                  "password": { "type": "string", "description": "The password of the user" }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string", "format": "uuid", "description": "The user's unique identifier" },
+                    "username": { "type": "string", "description": "The user's username" },
+                    "jwtToken": { "type": "string", "description": "The JSON Web Token for authentication" },
+                    "expiresIn": { "type": "integer", "description": "The token expiration time in seconds" }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "User not found" },
+          "403": { "description": "Login details is incorrect" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    }
+  }
+}
