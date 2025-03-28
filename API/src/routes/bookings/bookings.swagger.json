@@ -1,0 +1,206 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Booking API",
+    "version": "1.0.0",
+    "description": "API for managing bookings"
+  },
+  "paths": {
+    "/clients": {
+      "get": {
+        "summary": "Get all booking clients",
+        "responses": {
+          "200": {
+            "description": "List of booking clients",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "mainClient": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "integer" },
+                          "name": { "type": "string" }
+                        }
+                      },
+                      "patientClients": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "integer" },
+                            "name": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/bookings": {
+      "get": {
+        "summary": "Get all bookings",
+        "responses": {
+          "200": {
+            "description": "List of all bookings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string", "format": "uuid" },
+                      "allDay": { "type": "boolean" },
+                      "startDate": { "type": "string", "format": "date-time" },
+                      "endDate": { "type": "string", "format": "date-time" },
+                      "title": { "type": "string" },
+                      "description": { "type": "string" },
+                      "doctorName": { "type": "integer" },
+                      "debtorID": { "type": "string" },
+                      "patientID": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "post": {
+        "summary": "Create a new booking",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "allDay": { "type": "boolean" },
+                  "startDate": { "type": "string", "format": "date-time" },
+                  "endDate": { "type": "string", "format": "date-time" },
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "doctorName": { "type": "integer" },
+                  "debtorID": { "type": "string" },
+                  "patientID": { "type": "string" }
+                },
+                "required": [
+                  "startDate",
+                  "endDate"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Booking created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string", "format": "uuid" },
+                    "allDay": { "type": "boolean" },
+                    "startDate": { "type": "string", "format": "date-time" },
+                    "endDate": { "type": "string", "format": "date-time" },
+                    "title": { "type": "string" },
+                    "description": { "type": "string" },
+                    "doctorName": { "type": "integer" },
+                    "debtorID": { "type": "string" },
+                    "patientID": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/booking": {
+      "get": {
+        "summary": "Get booking details",
+        "responses": {
+          "200": {
+            "description": "Booking details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "integer" },
+                      "name": { "type": "string" },
+                      "main": { "type": "boolean"},
+                      "debtorID": { "type": ["integer", "null"]}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "put": {
+        "summary": "Update a booking",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "format": "uuid" },
+                  "allDay": { "type": "boolean" },
+                  "startDate": { "type": "string", "format": "date-time" },
+                  "endDate": { "type": "string", "format": "date-time" },
+                  "title": { "type": "string" },
+                  "description": { "type": "string" },
+                  "doctorName": { "type": "integer" },
+                  "debtorID": { "type": "string" },
+                  "patientID": { "type": "string" }
+                },
+                "required": ["id", "startDate", "endDate"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Booking updated successfully" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/booking/{bookingID}": {
+      "delete": {
+        "summary": "Delete a booking",
+        "parameters": [
+          {
+            "name": "bookingID",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Booking deleted successfully" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    }
+  }
+}
