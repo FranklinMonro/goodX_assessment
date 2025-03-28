@@ -3,15 +3,15 @@
   "info": {
     "title": "Booking API",
     "version": "1.0.0",
-    "description": "API for managing bookings"
+    "description": "API for managing bookings and clients"
   },
   "paths": {
     "/clients": {
       "get": {
-        "summary": "Get all booking clients",
+        "summary": "Get all booking clients with their main and patient clients",
         "responses": {
           "200": {
-            "description": "List of booking clients",
+            "description": "A list of booking clients, each with a main client and associated patient clients.",
             "content": {
               "application/json": {
                 "schema": {
@@ -22,27 +22,45 @@
                       "mainClient": {
                         "type": "object",
                         "properties": {
-                          "id": { "type": "integer" },
-                          "name": { "type": "string" }
-                        }
+                          "id": {
+                            "type": "integer",
+                            "description": "The ID of the main client."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "The name of the main client."
+                          }
+                        },
+                        "description": "The main client information."
                       },
                       "patientClients": {
                         "type": "array",
                         "items": {
                           "type": "object",
                           "properties": {
-                            "id": { "type": "integer" },
-                            "name": { "type": "string" }
-                          }
-                        }
+                            "id": {
+                              "type": "integer",
+                              "description": "The ID of the patient client."
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "The name of the patient client."
+                            }
+                          },
+                          "description": "Details of a patient client associated with the main client."
+                        },
+                        "description": "An array of patient clients associated with the main client (can be empty)."
                       }
-                    }
+                    },
+                    "description": "Represents a main client and their associated patient clients."
                   }
                 }
               }
             }
           },
-          "500": { "description": "Internal server error" }
+          "500": {
+            "description": "Internal server error"
+          }
         }
       }
     },
@@ -51,7 +69,7 @@
         "summary": "Get all bookings",
         "responses": {
           "200": {
-            "description": "List of all bookings",
+            "description": "A list of all bookings.",
             "content": {
               "application/json": {
                 "schema": {
@@ -59,22 +77,55 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "string", "format": "uuid" },
-                      "allDay": { "type": "boolean" },
-                      "startDate": { "type": "string", "format": "date-time" },
-                      "endDate": { "type": "string", "format": "date-time" },
-                      "title": { "type": "string" },
-                      "description": { "type": "string" },
-                      "doctorName": { "type": "integer" },
-                      "debtorID": { "type": "string" },
-                      "patientID": { "type": "string" }
-                    }
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "The unique ID of the booking."
+                      },
+                      "allDay": {
+                        "type": "boolean",
+                        "description": "Indicates if the booking is an all-day event."
+                      },
+                      "startDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The start date and time of the booking."
+                      },
+                      "endDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The end date and time of the booking."
+                      },
+                      "title": {
+                        "type": "string",
+                        "description": "The title of the booking."
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "A description of the booking."
+                      },
+                      "doctorName": {
+                        "type": "integer",
+                        "description": "The ID of the doctor associated with the booking."
+                      },
+                      "debtorID": {
+                        "type": "string",
+                        "description": "The ID of the debtor associated with the booking."
+                      },
+                      "patientID": {
+                        "type": "string",
+                        "description": "The ID of the patient associated with the booking."
+                      }
+                    },
+                    "description": "Represents a single booking."
                   }
                 }
               }
             }
           },
-          "500": { "description": "Internal server error" }
+          "500": {
+            "description": "Internal server error"
+          }
         }
       },
       "post": {
@@ -86,19 +137,46 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "allDay": { "type": "boolean" },
-                  "startDate": { "type": "string", "format": "date-time" },
-                  "endDate": { "type": "string", "format": "date-time" },
-                  "title": { "type": "string" },
-                  "description": { "type": "string" },
-                  "doctorName": { "type": "integer" },
-                  "debtorID": { "type": "string" },
-                  "patientID": { "type": "string" }
+                  "allDay": {
+                    "type": "boolean",
+                    "description": "Indicates if the booking is an all-day event."
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The start date and time of the booking.  ISO 8601 date-time string required."
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The end date and time of the booking. ISO 8601 date-time string required."
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "The title of the booking."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "A description of the booking."
+                  },
+                  "doctorName": {
+                    "type": "integer",
+                    "description": "The ID of the doctor associated with the booking."
+                  },
+                  "debtorID": {
+                    "type": "string",
+                    "description": "The ID of the debtor associated with the booking."
+                  },
+                  "patientID": {
+                    "type": "string",
+                    "description": "The ID of the patient associated with the booking."
+                  }
                 },
                 "required": [
                   "startDate",
                   "endDate"
-                ]
+                ],
+                "description": "The data for the new booking."
               }
             }
           }
@@ -111,30 +189,63 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": { "type": "string", "format": "uuid" },
-                    "allDay": { "type": "boolean" },
-                    "startDate": { "type": "string", "format": "date-time" },
-                    "endDate": { "type": "string", "format": "date-time" },
-                    "title": { "type": "string" },
-                    "description": { "type": "string" },
-                    "doctorName": { "type": "integer" },
-                    "debtorID": { "type": "string" },
-                    "patientID": { "type": "string" }
-                  }
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "The unique ID of the newly created booking."
+                    },
+                    "allDay": {
+                      "type": "boolean",
+                      "description": "Indicates if the booking is an all-day event."
+                    },
+                    "startDate": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The start date and time of the booking."
+                    },
+                    "endDate": {
+                      "type": "string",
+                      "format": "date-time",
+                      "description": "The end date and time of the booking."
+                    },
+                    "title": {
+                      "type": "string",
+                      "description": "The title of the booking."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "A description of the booking."
+                    },
+                    "doctorName": {
+                      "type": "integer",
+                      "description": "The ID of the doctor associated with the booking."
+                    },
+                    "debtorID": {
+                      "type": "string",
+                      "description": "The ID of the debtor associated with the booking."
+                    },
+                    "patientID": {
+                      "type": "string",
+                      "description": "The ID of the patient associated with the booking."
+                    }
+                  },
+                  "description": "The data of the created booking."
                 }
               }
             }
           },
-          "500": { "description": "Internal server error" }
+          "500": {
+            "description": "Internal server error"
+          }
         }
       }
     },
     "/booking": {
       "get": {
-        "summary": "Get booking details",
+        "summary": "Get booking client details (main clients)",
         "responses": {
           "200": {
-            "description": "Booking details",
+            "description": "A list of main booking clients.",
             "content": {
               "application/json": {
                 "schema": {
@@ -142,21 +253,39 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "integer" },
-                      "name": { "type": "string" },
-                      "main": { "type": "boolean"},
-                      "debtorID": { "type": ["integer", "null"]}
-                    }
+                      "id": {
+                        "type": "integer",
+                        "description": "The ID of the client."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the client."
+                      },
+                      "main": {
+                        "type": "boolean",
+                        "description": "Indicates if the client is a main client (true)."
+                      },
+                      "debtorID": {
+                        "type": [
+                          "integer",
+                          "null"
+                        ],
+                        "description": "The ID of the debtor associated with the client, or null if not applicable."
+                      }
+                    },
+                    "description": "Represents a main booking client."
                   }
                 }
               }
             }
           },
-          "500": { "description": "Internal server error" }
+          "500": {
+            "description": "Internal server error"
+          }
         }
       },
       "put": {
-        "summary": "Update a booking",
+        "summary": "Update an existing booking",
         "requestBody": {
           "required": true,
           "content": {
@@ -164,41 +293,88 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "id": { "type": "string", "format": "uuid" },
-                  "allDay": { "type": "boolean" },
-                  "startDate": { "type": "string", "format": "date-time" },
-                  "endDate": { "type": "string", "format": "date-time" },
-                  "title": { "type": "string" },
-                  "description": { "type": "string" },
-                  "doctorName": { "type": "integer" },
-                  "debtorID": { "type": "string" },
-                  "patientID": { "type": "string" }
+                  "id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "The unique ID of the booking to update."
+                  },
+                  "allDay": {
+                    "type": "boolean",
+                    "description": "Indicates if the booking is an all-day event."
+                  },
+                  "startDate": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The new start date and time of the booking. ISO 8601 date-time string required."
+                  },
+                  "endDate": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "The new end date and time of the booking. ISO 8601 date-time string required."
+                  },
+                  "title": {
+                    "type": "string",
+                    "description": "The new title of the booking."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "The new description of the booking."
+                  },
+                  "doctorName": {
+                    "type": "integer",
+                    "description": "The new ID of the doctor associated with the booking."
+                  },
+                  "debtorID": {
+                    "type": "string",
+                    "description": "The new ID of the debtor associated with the booking."
+                  },
+                  "patientID": {
+                    "type": "string",
+                    "description": "The new ID of the patient associated with the booking."
+                  }
                 },
-                "required": ["id", "startDate", "endDate"]
+                "required": [
+                  "id",
+                  "startDate",
+                  "endDate"
+                ],
+                "description": "The updated data for the booking."
               }
             }
           }
         },
         "responses": {
-          "200": { "description": "Booking updated successfully" },
-          "500": { "description": "Internal server error" }
+          "200": {
+            "description": "Booking updated successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
         }
       }
     },
     "/booking/{bookingID}": {
       "delete": {
-        "summary": "Delete a booking",
+        "summary": "Delete a booking by its ID",
         "parameters": [
           {
             "name": "bookingID",
             "in": "path",
             "required": true,
-            "schema": { "type": "string", "format": "uuid" }
+            "description": "The ID of the booking to delete.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
-          "200": { "description": "Booking deleted successfully" },
-          "500": { "description": "Internal server error" }
+          "200": {
+            "description": "Booking deleted successfully"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
         }
       }
     }

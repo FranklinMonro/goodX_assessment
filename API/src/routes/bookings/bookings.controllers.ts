@@ -6,6 +6,7 @@ import { bookingLogger as log } from '../../server/winston';
 import { SEQUILIZE_NEW } from '../../server/config';
 import { initModels } from '../../models-production/init-models';
 import { BookingClient, BookingClientAttribute } from './bookings.interfaces';
+import sendBookingEmail from './bookings.utils';
 
 const { clients, calendar } = initModels(SEQUILIZE_NEW);
 
@@ -130,6 +131,18 @@ const postBooking = async (
         log.error(`Error in bookings postBooking , error: ${err.message}`);
         throw new Error(`Error in clients postBooking, error: ${err}`);
       });
+    const sendMail = await sendBookingEmail({
+      name: 'test',
+      email: 'test@test.com',
+      date: DateTime.fromJSDate(create!.startDate!).toISODate()!,
+      time: DateTime.fromJSDate(create!.startDate!).toISOTime()!,
+      duration: 15,
+      type: 'Consultation',
+    });
+
+    if (sendMail instanceof Error) {
+      res.status(500).send('Error sending email');
+    }
     res.status(201).send(create.toJSON());
   } catch (error) {
     log.log('error', `URL ${req.baseUrl}, error: ${error}`);

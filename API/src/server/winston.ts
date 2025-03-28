@@ -133,6 +133,25 @@ const jwtTokenLogger = createLogger({
   },
 });
 
+const nodemailerLogger = createLogger({
+  transports: [
+    new transports.File({
+      dirname: 'logs',
+      filename: 'nodemailerLogger.log',
+    }),
+  ],
+  format: format.combine(
+    format.timestamp(),
+    format.printf(
+      ({ timestamp, level, message, service }) =>
+        `[${timestamp}] ${service} ${level}: ${message}`
+    )
+  ),
+  defaultMeta: {
+    service: 'WinstonExample',
+  },
+});
+
 const serverLogger = createLogger({
   transports: [
     new transports.File({
@@ -179,6 +198,7 @@ export {
   clientsLogger,
   errorHandlerLogger,
   jwtTokenLogger,
+  nodemailerLogger,
   serverLogger,
   swaggerLogger,
 };

@@ -7,16 +7,9 @@ services:
     shm_size: '8gb'
     volumes:
       - ../../:/workspaces:cached
-      
-    # Overrides default command so things don't shut down after the process ends.
-    command: /bin/sh -c "while sleep 1000; do :; done"  
-
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
-    network_mode: service:db
-    # enviroment:
-    #   - NODE_OPTIONS=--max_old_space_size=4096
-    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    networks:
+      - mynetwork
 
   db:
     image: postgres:latest
@@ -28,9 +21,9 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
+    networks:
+      - mynetwork
 
-    # Add "forwardPorts": ["5432"] to **devcontainer.json** to forward PostgreSQL locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin4
@@ -44,14 +37,20 @@ services:
       - db
     ports:
       - "5050:80"
-      
+    networks:
+      - mynetwork
+
   maildev:
     image: maildev/maildev:latest
     restart: always
     ports:
       - "8085:1080"
       - "8025:1025"
-    
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
 
 volumes:
   postgres-data:
