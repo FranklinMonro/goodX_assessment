@@ -1,0 +1,46 @@
+.center-div {
+  text-align: center;
+}
+
+.login-card {
+  height: 30%;
+  width: 30%;
+  margin: auto;
+  margin-top: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-image {
+  margin-top: 2%;
+  text-align: center;
+}
+
+.login-card-header-font {
+  color: #0099d8;
+  font-size: 3vh;
+  text-align: center;
+}
+
+.login-card-header-font-welc {
+  font-family: brush script mt;
+}
+
+.login-card-header-font-dash {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-card-content-field {
+  width: 100%;
+}
+
+.login-submit {
+  text-align: center;
+  padding-bottom: 5%;
+}
+
+#login-button {
+  color: azure;
+  background-color: #0099d8;
+}

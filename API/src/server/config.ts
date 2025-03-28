@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
 import { Sequelize } from 'sequelize';
+import cors from 'cors';
 // import dotenv from 'dotenv';
 
 import { DateTime } from 'luxon';
@@ -44,6 +45,22 @@ const connectToDB = async () => {
 
 connectToDB();
 
+const CORS_OPTIONS: cors.CorsOptions = {
+  origin: ['*', 'http://localhost:4200'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: [
+    'Origin',
+    'X-Requested-With',
+    'Content-Type',
+    'Accept',
+    'Cache-Control',
+    'Authorization',
+    'X-CSRFToken',
+    'X-Authorization',
+  ],
+  credentials: true,
+};
+
 const JWT_TOKEN_KEY = 'fa54468c-3fbe-4d8f-9f8e-4fc4b9f1e19a';
 const JWT_TOKEN_EXPIRATION = DateTime.now().plus({ day: 1 }).toMillis();
 
@@ -51,6 +68,7 @@ const BRCRYPT_SALT = 10;
 export {
   PORT,
   HOST,
+  CORS_OPTIONS,
   SEQUILIZE_NEW,
   JWT_TOKEN_KEY,
   JWT_TOKEN_EXPIRATION,

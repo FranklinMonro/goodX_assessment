@@ -1,17 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from './auth/auth.service';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  standalone: true
 })
-export class AppComponent implements OnInit{
-  title = 'goodX Assessment';
-
-  constructor(private authService: AuthService){}
-
-  ngOnInit(): void {
-    this.authService.autoLogin();
-  }
+export class AppComponent {
+  title = 'WEB';
 }

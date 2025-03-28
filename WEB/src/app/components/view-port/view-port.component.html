@@ -1,0 +1,27 @@
+<div class="home-container">
+  <mat-toolbar id="home-toolbar" >
+    <button class="home-toolbar-icon" mat-icon-button (click)="isExpanded = !isExpanded"><mat-icon >menu</mat-icon></button>
+    &nbsp;
+    <h1><span class="home-toolbar-welcome">Welcome: </span>{{ username }}</h1>
+    <span class="home-toolbar-spacer"></span>
+    <button class="home-toolbar-icon" mat-icon-button matTooltip="Log out" (click)="logOut()">
+      <mat-icon >logout</mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-sidenav-container class="home-sidenav-container" autosize>
+    <mat-sidenav #sidenav [ngClass]="isExpanded ? 'home-sidenav-open' : 'home-sidenav-close'" mode="side" opened="true">
+      <mat-nav-list>
+        <mat-list-item class="nav-list-item" *ngFor="let nav of navItems">
+          <div class="icon-text" [matTooltip]="nav.toolTip" [routerLink]="nav.link" routerLinkActive="home-nav-link-active">
+            <mat-icon>{{ nav.icon }}</mat-icon>
+            &nbsp;
+            <span *ngIf="isExpanded || isShowing">{{ nav.navName }}</span>
+          </div>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    <div class="home-sidenav-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-container>
+</div>

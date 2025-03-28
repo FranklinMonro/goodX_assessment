@@ -9,7 +9,7 @@ import {
   JWT_TOKEN_EXPIRATION,
   SEQUILIZE_NEW,
 } from '../../server/config';
-import { initModels } from '../../models-auto/init-models';
+import { initModels } from '../../models-production/init-models';
 import { jwtTokenSign } from '../../server/jwtToken';
 
 const { users } = initModels(SEQUILIZE_NEW);
@@ -34,7 +34,7 @@ const postLogInUser = async (
       });
 
     if (!getUser) {
-      res.sendStatus(404);
+      res.status(404).send('User not found');
       return;
     }
 
@@ -43,7 +43,7 @@ const postLogInUser = async (
       getUser!.password!.trim()
     );
     if (!comparePassword) {
-      res.sendStatus(403);
+      res.status(403).send('Login details is incorrect');
       return;
     }
     res.status(200).send({
@@ -65,8 +65,6 @@ const postRegister = async (
 ): Promise<void> => {
   try {
     const { username, password } = req.body as LogInAuthUser;
-    const salt = await genSaltSync(BRCRYPT_SALT);
-    const hashPassword = await hashSync(password, salt);
     const checkUser = await users
       .findOne({
         where: {
@@ -79,10 +77,12 @@ const postRegister = async (
         throw new Error(`Error in users postRegister, error: ${err}`);
       });
 
-    if (!checkUser) {
-      res.sendStatus(303);
+    if (checkUser) {
+      res.status(303).send('User already exists');
       return;
     }
+    const salt = await genSaltSync(BRCRYPT_SALT);
+    const hashPassword = await hashSync(password, salt);
     const createUser = await users
       .create(
         {
@@ -100,7 +100,7 @@ const postRegister = async (
       });
 
     if (Object.entries(createUser.toJSON()).length === 0) {
-      res.sendStatus(422);
+      res.status(422).send('User has not been register');
       return;
     }
     res.status(201).send(createUser.isNewRecord);

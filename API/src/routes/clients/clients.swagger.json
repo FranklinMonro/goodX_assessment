@@ -1,0 +1,180 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Clients API",
+    "version": "1.0.0",
+    "description": "API for managing clients and debtors"
+  },
+  "paths": {
+    "/debtors": {
+      "get": {
+        "summary": "Get all debtors",
+        "responses": {
+          "200": {
+            "description": "List of all debtors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": { "type": "string", "format": "uuid" },
+                      "debtor": { "type": "string" },
+                      "telephone": { "type": "integer" },
+                      "debtorID": { "type": "string", "format": "uuid" },
+                      "name": { "type": "string" },
+                      "main": { "type": "boolean" },
+                      "relationship": { "type": "string" },
+                      "active": { "type": "boolean" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "post": {
+        "summary": "Create a new debtor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "debtor": { "type": "string" },
+                  "telephone": { "type": "integer" },
+                  "patients": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": { "type": "string" },
+                        "main": { "type": "boolean" },
+                        "relationship": { "type": "string" }
+                      },
+                      "required": ["relationship"]
+                    }
+                  }
+                },
+                "required": ["debtor", "patients"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Debtor created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean",
+                  "description": "Indicates if the debtor was newly created"
+                }
+              }
+            }
+          },
+          "422": { "description": "Debtor creation failed" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    },
+    "/debtor": {
+      "get": {
+        "summary": "Get a debtor by client ID",
+        "parameters": [
+          {
+            "name": "clientID",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Debtor details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string", "format": "uuid" },
+                    "debtor": { "type": "string" },
+                    "telephone": { "type": "integer" },
+                    "patients": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string", "format": "uuid" },
+                          "name": { "type": "string" },
+                          "main": { "type": "boolean" },
+                          "relationship": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "put": {
+        "summary": "Update a client",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string", "format": "uuid" },
+                  "debtor": { "type": "string" },
+                  "telephone": { "type": "integer" },
+                  "patients": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string", "format": "uuid" },
+                        "name": { "type": "string" },
+                        "main": { "type": "boolean" },
+                        "relationship": { "type": "string" }
+                      }
+                    }
+                  }
+                },
+                "required": ["id", "patients"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Client updated successfully" },
+          "500": { "description": "Internal server error" }
+        }
+      },
+      "delete": {
+        "summary": "Delete a client",
+        "parameters": [
+          {
+            "name": "clientID",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "202": { "description": "Client deleted successfully" },
+          "404": { "description": "Client not found" },
+          "500": { "description": "Internal server error" }
+        }
+      }
+    }
+  }
+}

@@ -15,14 +15,15 @@
 	"features": {
 		"ghcr.io/devcontainers/features/github-cli:1": {},
 		"ghcr.io/devcontainers/features/node:1": {},
-		"ghcr.io/devcontainers-extra/features/prettier:1": {}
+		"ghcr.io/devcontainers-extra/features/prettier:1": {},
+		"ghcr.io/devcontainers-extra/features/angular-cli:2": {}
 	},
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [5432, 5050, 4200, 3000],
+	"forwardPorts": [5432, 5050, 4200, 3000, 1080, 1025],
 	
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "npm install",
